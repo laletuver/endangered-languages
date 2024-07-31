@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <title>Endangered Languages Map</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        body {
+            background: gray;
+            margin: 75px 100px 100px 100px;
+            color: white;
+            font-family: Tahoma;
+            font-weight: lighter;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom:0;
+            left: 0;
+            right: 0;
+        } 
+        .custom-div-icon {
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            border: 2px solid red;
+        }
+        #filter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            color: black;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        #filter label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        #filter select {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        #legend {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        #legend p {
+            margin: 0;
+            line-height: 1.5;
+        }
+        #legend span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+    </style> 
+</head>
+<body>
+    <div id="filter">
+        <label for="statusSelect">Filter by Language Status:</label>
+        <select id="statusSelect">
+            <option value="all">All</option>
+            <option value="At risk">At risk</option>
+            <option value="Vulnerable">Vulnerable</option>
+            <option value="Threatened">Threatened</option>
+            <option value="Endangered">Endangered</option>
+            <option value="Severely Endangered">Severely Endangered</option>
+            <option value="Critically Endangered">Critically Endangered</option>
+            <option value="Awakening">Awakening</option>
+        </select>
+        <div id="legend">
+            <p><span style="background: green;"></span> At risk</p>
+            <p><span style="background: blue;"></span> Vulnerable</p>
+            <p><span style="background: lightblue;"></span> Threatened</p>
+            <p><span style="background: yellow;"></span> Endangered</p>
+            <p><span style="background: orange;"></span> Severely Endangered</p>
+            <p><span style="background: red;"></span> Critically Endangered</p>
+            <p><span style="background: gray;"></span> Awakening</p>
+        </div>
+    </div>
+    <div id="map"></div>
+    <script>
+        var map = L.map('map').setView([54.5260, 60.2551], 3);
+
+        var southWest = L.latLng(30.0, -35.0), 
+            northEast = L.latLng(75.0, 60.0); 
+        var bounds = L.latLngBounds(southWest, northEast);
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
+        });
+        
+        L.tileLayer('https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=2IKk83vhqECITSYLfFcj', {
+            attribution: '&copy; MapTiler contributors'
+        }).addTo(map);
+
+
+        var statusColors = {
+            "At risk": "green",
+            "Vulnerable": "blue",
+            "Threatened": "lightblue",
+            "Endangered": "yellow",
+            "Severely Endangered": "orange",
+            "Critically Endangered": "red",
+            "Awakening": "gray"
+        };
+
+        //generate pop-up content
+        var generatePopupContent = function(name, status, dialects, number_of_speakers, url) {
+            return "<a href='" + url + "' target='_blank'><b>" + name + "</b></a><br>Status: " + status + "<br>Dialects: " + dialects + "<br>Number of speakers: " + number_of_speakers;
+        };
+
+        //custom icon
+        var customCircleMarker = function(lat, lng, name, status, dialects, number_of_speakers, url) {
+            var popupContent = generatePopupContent(name, status, dialects, number_of_speakers, url);
+            return L.circleMarker([lat, lng], {
+            radius: 6,
+            fillColor: statusColors[status],
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 1
+        }).bindPopup(popupContent);
+        };
+
+        // List of coordinates,dialects, status and nr of speakers from dataset
+        var coordinates = [
+            {'lat': 40.564318,
+            'lng': 8.328667,
+            'name': 'Catalan',
+            'status': 'Vulnerable',
+            'dialects': 'Catalan-Valencian-Balear; Catalonian; Valencian; Catalán',
+            'number_of_speakers': '20,000-30,000'},
+            {'lat': 42.2935,
+            'lng': -0.4394,
+            'name': 'Aragonese',
+            'status': 'Endangered',
+            'dialects': 'Aragoieraz; Altoaragonés; Aragonés; Fabla Aragonesa; Patués; High Aragonese;',
+            'number_of_speakers': '<10,000'},
+            {'lat': 40.9321,
+            'lng': 14.8645,
+            'name': 'Arbëreshë',
+            'status': 'Vulnerable',
+            'dialects': 'Italo-Albanian; Albanian; Arber; Arbresh; Arnaut; Škip; Shqipēri; Shquipni; Arbëreshë Albanian; Arbëreshë; Albanesisch; Albanian, Arbëreshë',
+            'number_of_speakers': '<100,000'},
+            {'lat': 40.2292,
+            'lng': 21.1376,
+            'name': 'Aromanian',
+            'status': 'Threatened',
+            'dialects': 'Armãneashti; Armãneascã; Armãneshce; Rrămăneashti; Machiduneashti; Armân; Arumanian; Armina; Vlach; Arumun; Aromunian; Macedo-Romanian; Macedo-Rumanian; Other Roumanian Lects;',
+            'number_of_speakers': '350,000'},
+            {'lat': 38.1863,
+            'lng': 23.6096,
+            'name': 'Arvanitika',
+            'status': 'Vulnerable',
+            'dialects': 'Albanian; Arber; Arbresh; Arnaut; Škip; Shqipēri; Shquipni; Arvanitika; Arvanitika Albanian; Arvanitic; Arberichte; Albanesisch; Albanian, Arvanitika',
+            'number_of_speakers': '50,000'},
+            {'lat': 43.357138,
+            'lng': -5.865532,
+            'name': 'Asturian',
+            'status': 'At risk',
+            'dialects': 'Asturiano; Leonese; Leonés; Astur-Leonese; Asturian-Leonese; Asturianu',
+            'number_of_speakers': '110,000'},
+            {'lat': 48.0,
+            'lng': -3.0,
+            'name': 'Breton',
+            'status': 'At risk',
+            'dialects': 'Brezhoneg;',
+            'number_of_speakers': '206,000'},
+            {'lat': 47.8435,
+            'lng': 16.5179,
+            'name': 'Burgenland Croatian',
+            'status': 'Threatened',
+            'dialects': 'Chakavski, Chekavski, Čakavština, Čakavian, Čakavica, Čekavski, Čokovski',
+            'number_of_speakers': '28,000'},
+            {'lat': 40.0,
+            'lng': 9.0,
+            'name': 'Campidanese Sardinian',
+            'status': 'Vulnerable',
+            'dialects': 'Sardinian; Campidanese; Campidanese Sardinian; Campidanian Sardinian; Sardu; Campidese; South Sardinian; Sardinian, Campidanese',
+            'number_of_speakers': '500,000'},
+            {'lat': 41.38711263243966,
+            'lng': 2.176666259765625,
+            'name': 'Catalan Sign Language',
+            'status': 'Vulnerable',
+            'dialects': 'Llengua de Signes Catalana; Llengua Catalana de Signes; Lengua de Signos Catalana;',
+            'number_of_speakers': '18,000'},
+            {'lat': 45.867,
+            'lng': 11.4268,
+            'name': 'Cimbrian',
+            'status': 'Threatened',
+            'dialects': 'Tzimbro; Zimbrisch;',
+            'number_of_speakers': '~2,000'},
+            {'lat': 42.0819,
+            'lng': 9.0307,
+            'name': 'Corsican',
+            'status': 'At risk',
+            'dialects': 'Corsu; Corso; Corse; Corsi;',
+            'number_of_speakers': '160,000'},
+            {'lat': 35.25,
+            'lng': 33.5,
+            'name': 'Cypriot Spoken Arabic',
+            'status': 'Endangered',
+            'dialects': 'Cypriot Arabic: Kormakiti; Cypriot Arabic; Arabic (Kormakiti); Arabic; Cypriot Spoken; Cypriot Maronite Arabic; Maronite; Sanna; Arabic, Cypriot Spoken',
+            'number_of_speakers': '<2,000'},
+            {'lat': 50.01,
+            'lng': 14.48,
+            'name': 'Czech Sign Language',
+            'status': 'Vulnerable',
+            'dialects': 'CZJ; Český Znakový Jazyk',
+            'number_of_speakers': '12,000'},
+            {'lat': 61.2385,
+            'lng': 14.0295,
+            'name': 'Dalecarlian',
+            'status': 'Threatened',
+            'dialects': 'Dalska; Dalmaal;',
+            'number_of_speakers': '~13,000'},
+            {'lat': 55.83,
+            'lng': 12.32,
+            'name': 'Danish Sign Language',
+            'status': 'Threatened',
+            'dialects': 'DTS; Dansk tegnsprog',
+            'number_of_speakers': '5,000'},
+            {'lat': 52.13,
+            'lng': 4.91,
+            'name': 'Dutch Sign Language',
+            'status': 'Vulnerable',
+            'dialects': 'Sign Language of the Netherlands; SLN; Nederlandse Gebarentaal; NGT',
+            'number_of_speakers': '20,000'},
+            {'lat': 58.95,
+            'lng': 24.57,
+            'name': 'Estonian Sign Language',
+            'status': 'Threatened',
+            'dialects': 'Viipekeel;',
+            'number_of_speakers': '4,500'},
+            {'lat': 60.66,
+            'lng': 25.07,
+            'name': 'Finnish Sign Language',
+            'status': 'Threatened',
+            'dialects': 'Viittomakieli;',
+            'number_of_speakers': '5,000'},
+            {'lat': 62.111,
+            'lng': 26.328,
+            'name': 'Finnish-Swedish Sign Language',
+            'status': 'Endangered',
+            'dialects': 'Finland-Swedish Sign Language; Suomenruotsalainen Vittomakieli; Finlandssvenskt Teckenspråk;',
+            'number_of_speakers': '150'},
+            {'lat': 50.8,
+            'lng': 4.31,
+            'name': 'Flemish Sign Language',
+            'status': 'Threatened',
+            'dialects': 'South Belgium Sign Language; North Belgium Sign Language; Vlaamse Gebarentaal; VGT;',
+            'number_of_speakers': '6,000'},
+            {'lat': 45.7828,
+            'lng': 6.9982,
+            'name': 'Francoprovençal',
+            'status': 'Endangered',
+            'dialects': 'Patois; Arpitan; Romand',
+            'number_of_speakers': '130,000'},
+            {'lat': 46.1037,
+            'lng': 13.1396,
+            'name': 'Friulian',
+            'status': 'Threatened',
+            'dialects': 'Furlan; Frioulan; Frioulian; Priulian; Friulano;',
+            'number_of_speakers': '600,412'},
+            {'lat': 47.931,
+            'lng': -2.0544,
+            'name': 'Gallo',
+            'status': 'Threatened',
+            'dialects': 'Galo; Gallot; Galoo; ',
+            'number_of_speakers': '200,000 - 400,000'},
+            {'lat': 40.8802,
+            'lng': 9.4482,
+            'name': 'Gallurese Sardinian',
+            'status': 'At risk',
+            'dialects': 'Sardinian; Sardinian, Gallurese; Northeastern Sardinian; Gallurese;',
+            'number_of_speakers': '100,000'},
+            {'lat': 43.1811,
+            'lng': -0.1428,
+            'name': 'Gascon',
+            'status': 'At risk',
+            'dialects': 'Gascon Occitan; Aranés; Aranese; Arnais; Aranese Occitan',
+            'number_of_speakers': '250,000'},
+            {'lat': 49.433333,
+            'lng': -2.583333,
+            'name': 'Guernésiais',
+            'status': 'Endangered',
+            'dialects': 'Dgèrnésiais; Guernsey French; Guernésiais',
+            'number_of_speakers': '200-300'},
+            {'lat': 68.8446,
+            'lng': 27.2817,
+            'name': 'Inari Saami',
+            'status': 'Endangered',
+            'dialects': 'инари-саамский язык; inarinsaame; anarâškielâ; Anárašgiella; Enaresamisk; Enaresamiska; "Inari Lappish;" ',
+            'number_of_speakers': '~300'},
+            {'lat': 52.5,
+            'lng': -9.0,
+            'name': 'Irish',
+            'status': 'Endangered',
+            'dialects': 'Gaeilge; Irish Gaelic; Erse; Gadhelisch;',
+            'number_of_speakers': '20,000-40,000'},
+            {'lat': 45.0541,
+            'lng': 13.7246,
+            'name': 'Istriot',
+            'status': 'Severely Endangered',
+            'dialects': 'Istriano, Istro-Romance',
+            'number_of_speakers': '~400'},
+            {'lat': 45.3907,
+            'lng': 14.436,
+            'name': 'Istro Romanian',
+            'status': 'Endangered',
+            'dialects': 'Istro-Romanian; Other Roumanian Lects; Istro-Rumanian; Romanian, Istro',
+            'number_of_speakers': '~300'},
+            {'lat': 49.2211,
+            'lng': -2.1368,
+            'name': 'Jèrriais',
+            'status': 'Threatened',
+            'dialects': 'Guernésiais; Jersey French; Jersiais; Jèrriais; Jersey Norman; Guernsey French',
+            'number_of_speakers': '2,874'},
+            {'lat': 64.175,
+            'lng': -51.738889,
+            'name': 'Kalaallisut',
+            'status': 'Vulnerable',
+            'dialects': 'Inuit; Eskimo; Greenlandic; Greenlandic Eskimo;',
+            'number_of_speakers': '53,000'},
+            {'lat': 54.356076,
+            'lng': 17.893982,
+            'name': 'Kashubian',
+            'status': 'Vulnerable',
+            'dialects': 'Cassubian; Kaszubski; Cashubian;',
+            'number_of_speakers': '50,000'},
+            {'lat': 69.38,
+            'lng': 29.54,
+            'name': 'Kven Finnish',
+            'status': 'Severely Endangered',
+            'dialects': 'North Fennic; North Finnish; Kven;',
+            'number_of_speakers': '1,500-10,000 (estimated)'},
+            {'lat': 46.5833333333,
+            'lng': 11.9166666667,
+            'name': 'Ladin',
+            'status': 'Threatened',
+            'dialects': 'Ladino; Dolomite; Rhaeto-Romance; Rhaeto-Romanic;',
+            'number_of_speakers': '~20,000'},
+            {'lat': 43.8899,
+            'lng': 2.5378,
+            'name': 'Languedocien',
+            'status': 'Vulnerable',
+            'dialects': 'Languedocien Occitan; Languedocian; Lengadoucian; Languedoc; Langadoc; Occitan; Occitani;',
+            'number_of_speakers': '>1,000,000'},
+            {'lat': 46.0579,
+            'lng': 1.8017,
+            'name': 'Limousin',
+            'status': 'At risk',
+            'dialects': 'Limousin Occitan; Lemosin; Occitan Limousin',
+            'number_of_speakers': '400,000'},
+            {'lat': 56.8333333333,
+            'lng': 24.0,
+            'name': 'Livonian',
+            'status': 'Awakening',
+            'dialects': 'rānda kēļ; Liv; Liivõ Keelj; liiv; Livisch; kurländisch-livisch; live; rändalis-; livy; Livian; rānda kēl΄; libiesu valoda; livskij jazyk; ',
+            'number_of_speakers': '"The 30 people mentioned above (Livones) who speak Livonian well include scientists and other interested individuals from research insti-tutions around the world but who are not Livonians themselves; Livo-nian descendants who did not learn Livonian from their parents but from their grandparents; also those who learned Livonian from a fluent older speaker (not a family member) and through self-study. It may be that 30 is too large of a number if we evaluate these speakers using, for example, the language proficiency levels as defined by the Common European Framework of Reference for Languages (using their general principles, as a description of Livonian language proficiency levels is not, of course, currently available and for the time being is not even pos-sible to generate)."'},
+            {'lat': 40.1116,
+            'lng': 9.1845,
+            'name': 'Logudorese Sardinian',
+            'status': 'Threatened',
+            'dialects': 'Sardinian; Logudorese; Sardinian, Logudorese; Logodurese Sardinian; Sard; Sardarese; Central Sardinian;',
+            'number_of_speakers': '~500,000'},
+            {'lat': 50.256688,
+            'lng': 18.500977,
+            'name': 'Lower Silesian',
+            'status': 'Vulnerable',
+            'dialects': 'Silesian; Lower Schlesisch; Silesian, Lower',
+            'number_of_speakers': '22,900'},
+            {'lat': 51.75,
+            'lng': 14.3333333333,
+            'name': 'Lower Sorbian',
+            'status': 'Threatened',
+            'dialects': 'Sorbian; Sorbian (Lower); Lusatian; Wendish; Lower Lusatian; Low Sorbian; Lower Wendish; Dolna Lužica; Southern Lusatian; Saxon Lusatian; Lower Sorbian; Niedersorbisch; Bas Sorabe; Dolnoserbski; Delnoserbski; Wendisch; Sorbian, Lower',
+            'number_of_speakers': '7,240'},
+            {'lat': 67.272,
+            'lng': 17.7978,
+            'name': 'Lule Saami',
+            'status': 'Endangered',
+            'dialects': 'Lulesamisk; Lulesamiska; luulajansaame; julevsámegiella; луле-саамский язык; "Lule Lapp";',
+            'number_of_speakers': '1,000-2,000'},
+            {'lat': 66.53,
+            'lng': 24.41,
+            'name': 'Meänkieli',
+            'status': 'Endangered',
+            'dialects': 'Tornionlaakson Suomi; Torne Valley Finnish; Meän Suomi; Tornedalen Finnish',
+            'number_of_speakers': '20,000'},
+            {'lat': 41.1042,
+            'lng': 22.2025,
+            'name': 'Megleno-Romanian',
+            'status': 'Threatened',
+            'dialects': 'Megleno-Rumanian; Meglenitic; Meglenite; Other Roumanian Lects; Romanian, Megleno',
+            'number_of_speakers': '5,000'},
+            {'lat': 39.517,
+            'lng': -8.683,
+            'name': 'Minderico',
+            'status': 'Severely Endangered',
+            'dialects': 'Piação do Ninhou; Minde',
+            'number_of_speakers': '150'},
+            {'lat': 41.4958535,
+            'lng': -6.2738577,
+            'name': 'Miranda do Douro',
+            'status': 'Vulnerable',
+            'dialects': 'Mirandês; Mirandesa; Mirandese;',
+            'number_of_speakers': '15,000'},
+            {'lat': 46.1194,
+            'lng': 11.3258,
+            'name': 'Mócheno',
+            'status': 'Threatened',
+            'dialects': 'Bersntolerisch; Fersentalerisch; Mochenisch; Mocheno; Mócheno',
+            'number_of_speakers': '1,900'},
+            {'lat': 49.081,
+            'lng': -0.6591,
+            'name': 'Norman',
+            'status': 'Severely Endangered',
+            'dialects': 'Northern French; Normand;',
+            'number_of_speakers': '~11,100'},
+            {'lat': 67.5113,
+            'lng': 20.1523,
+            'name': 'North Saami',
+            'status': 'Threatened',
+            'dialects': 'Sami; North Sámi (sápmi or sámegiella); Northern Saami; Norwegian Sami; pohjoissaame; Nordsamiska; Nordsamisk; северносаамский язык; Same; Saami; Lapp; Sámegiella; davvisámegiella; "Northern Lapp";  "Northern Lappish"; "Norwegian Lapp"; Cohkkiras (Jukkasjarvi) variety',
+            'number_of_speakers': 'About 25,700 total: 20,000 in Norway, 4,000 in Sweden, 1,700 in Finland'},
+            {'lat': 54.5,
+            'lng': 9.0,
+            'name': 'Northern Frisian',
+            'status': 'Threatened',
+            'dialects': 'Frisian (North); Frisian (Northern); Frisian; North Frisian; Nordfriesisch; Friesisch;  Frisian, Northern',
+            'number_of_speakers': '~8,000'},
+            {'lat': 60.77,
+            'lng': 10.24,
+            'name': 'Norwegian Sign Language',
+            'status': 'Threatened',
+            'dialects': 'NTS, Norsk Tegnspråk',
+            'number_of_speakers': '4,000'},
+            {'lat': 50.2331,
+            'lng': 2.7905,
+            'name': 'Picard',
+            'status': 'Vulnerable',
+            'dialects': 'Rouchi; Chtimi;',
+            'number_of_speakers': '~200,000'},
+            {'lat': 45.0,
+            'lng': 7.66666666667,
+            'name': 'Piemontese',
+            'status': 'Vulnerable',
+            'dialects': 'Italian (Turinese); Piedmontese;',
+            'number_of_speakers': '~2,000,000'},
+            {'lat': 66.0447,
+            'lng': 17.8857,
+            'name': 'Pite Saami',
+            'status': 'Critically Endangered',
+            'dialects': 'Arjeplog Saami; Pitesamisk; Pitesamiska; Piitimensaame; Пите-саамский язык; Bidumsámegiella; "Pite Lapp"',
+            'number_of_speakers': '~42'},
+            {'lat': 40.847,
+            'lng': 40.0149,
+            'name': 'Pontic',
+            'status': 'Threatened',
+            'dialects': 'Pontic Greek; Romeyka; Rumca; Rumcika; Romeika; ',
+            'number_of_speakers': '100,000-200,000'},
+            {'lat': 38.55,
+            'lng': -8.53,
+            'name': 'Portuguese Sign Language',
+            'status': 'Threatened',
+            'dialects': 'Lingua Gestual Portuguesa;',
+            'number_of_speakers': '<8,000'},
+            {'lat': 44.0,
+            'lng': 6.0,
+            'name': 'Provençal',
+            'status': 'Threatened',
+            'dialects': 'Provençal Occitan; Provenzale; Prouvençau; Mistralien',
+            'number_of_speakers': '~200,000'},
+            {'lat': 44.23,
+            'lng': 11.72,
+            'name': 'Romagnol',
+            'status': 'Threatened',
+            'dialects': 'Emiliano-Romagnolo; Rumagnol;',
+            'number_of_speakers': '1,000,000-2,000,000'},
+            {'lat': 46.5777,
+            'lng': 9.6954,
+            'name': 'Romansch',
+            'status': 'Vulnerable',
+            'dialects': 'Grishun; Rumauntsch; Rheto-Romance; Rhaeto-Romance; Romansh; Romanche; Rhäto-Romanisch; Romanisch; Rätoromanisch',
+            'number_of_speakers': '~60,000'},
+            {'lat': 40.6139,
+            'lng': 8.6132,
+            'name': 'Sassarese Sardinian',
+            'status': 'At risk',
+            'dialects': 'Sardinian; Sardinian, Sassarese; Northwestern Sardinian; Sassarese;',
+            'number_of_speakers': '100,000'},
+            {'lat': 53.1059,
+            'lng': 7.6787,
+            'name': 'Saterfriesisch',
+            'status': 'Threatened',
+            'dialects': 'East Frisian; Saterfriesiesch; Saterländisch; Saterlandic Frisian; Frisian;',
+            'number_of_speakers': '5,000'},
+            {'lat': 57.0,
+            'lng': -4.0,
+            'name': 'Scottish Gaelic',
+            'status': 'Threatened',
+            'dialects': 'Gaelic, Scottish; Gaelic (Scots); Scottish Gaelic; Scotch-Gaelic; Gàidhlig; Gaelic; Scots Gaelic; Albannach Gaidhlig; Erse; Gadhelisch',
+            'number_of_speakers': '20,000-30,000'},
+            {'lat': 53.178583,
+            'lng': -7.556409,
+            'name': 'Shelta',
+            'status': 'Vulnerable',
+            'dialects': 'Cant, Gammon, Irish Traveler Cant, Sheldru, The Cant',
+            'number_of_speakers': '27,000'},
+            {'lat': 69.505596,
+            'lng': 28.592182,
+            'name': 'Skolt Saami',
+            'status': 'Critically Endangered',
+            'dialects': 'Koltta; Eastern Saami; Kola Saami; Koltansaame; колтта-саамский язык; sääʹmǩiõll; nuõrttsääʹmǩiõll; Skoltesamisk; Skoltesamiska;',
+            'number_of_speakers': '~300'},
+            {'lat': 64.6666666667,
+            'lng': 16.75,
+            'name': 'South Saami',
+            'status': 'Endangered',
+            'dialects': 'Saami (Central-South); Saami (Southern); Same; Samic; Saamen kieli; Sāme-giellâ; Vefsn; Eteläsaame; Saamí meridional; "Lapon"; Sabme; Same; "Lopary"; "Lappic"; "Lapp"; "Lappisk"; "Lapin kieli"; Saamskij jazyk; "Südlappisch"; "Lappish"; "Røroslappisk";',
+            'number_of_speakers': '600'},
+            {'lat': 46.72,
+            'lng': 6.78,
+            'name': 'Swiss-French Sign Language',
+            'status': 'Endangered',
+            'dialects': 'Langage Gestuelle; Langue des Signes Suisse romande; LSF-SR',
+            'number_of_speakers': '1,700'},
+            {'lat': 47.11,
+            'lng': 9.08,
+            'name': 'Swiss-German Sign Language',
+            'status': 'Endangered',
+            'dialects': 'Natürliche Gebärde; Deutschschweizerische Gebärdensprache; DSGS;',
+            'number_of_speakers': '5,500'},
+            {'lat': 46.31,
+            'lng': 8.79,
+            'name': 'Swiss-Italian Sign Language',
+            'status': 'Endangered',
+            'dialects': 'Lingua dei Segni Italiana; LIS-SI',
+            'number_of_speakers': '300'},
+            {'lat': 37.262826,
+            'lng': 22.683782,
+            'name': 'Tsakonian',
+            'status': 'Severely Endangered',
+            'dialects': 'Tsaconia; Tsakonia;',
+            'number_of_speakers': '2000-4000'},
+            {'lat': 65.1091,
+            'lng': 18.2153,
+            'name': 'Ume Saami',
+            'status': 'Critically Endangered',
+            'dialects': 'Southern Saami; Ume Sami; Umesamiska; Umesamisk; Uumajansaame; уме-саамский язык; Ubmejensámien giella; "Ume Lapp";',
+            'number_of_speakers': '<20'},
+            {'lat': 50.680797,
+            'lng': 17.878417,
+            'name': 'Upper Silesian',
+            'status': 'Vulnerable',
+            'dialects': 'Silesian; ślōnskŏ gŏdka; ślōnski, ślōnskŏ mŏwa, Śląski, Szlonzok; Eng: Silesian; Pol: język śląski; Ces: slezský jazyk',
+            'number_of_speakers': '56,000'},
+            {'lat': 51.5,
+            'lng': 14.0,
+            'name': 'Upper Sorbian',
+            'status': 'Vulnerable',
+            'dialects': 'Sorbian; Sorbian (Upper); Eastern Sorbian; Upper Sorbian; Obersorbisch; Haut Sorabe; Upper Lusatian; Wendish; Hornjoserbski; Hornoserbski; Wendisch; Sorbian, Upper',
+            'number_of_speakers': '18,240'},
+            {'lat': 57.8096,
+            'lng': 27.29,
+            'name': 'Võro',
+            'status': 'Threatened',
+            'dialects': 'Dialekt von Võru; Võro kiil; Werro; Voro; Võru; Voru; Vôru;',
+            'number_of_speakers': '< 50,000?'},
+            {'lat': 50.4575,
+            'lng': 4.8559,
+            'name': 'Walloon',
+            'status': 'Threatened',
+            'dialects': 'Walon; Wallon;',
+            'number_of_speakers': '~600,000'},
+            {'lat': 53.14,
+            'lng': -4.27,
+            'name': 'Welsh',
+            'status': 'Vulnerable',
+            'dialects': 'Cymraeg; y Gymraeg; Kymrisch; Gallois; Galés;',
+            'number_of_speakers': '562,016 in Wales'},
+            {'lat': 53.219359,
+            'lng': 5.78621,
+            'name': 'West Frisian',
+            'status': 'At risk',
+            'dialects': 'Frysk; Fries; Frisian; West(er)lauwers Fries; West(er)lauwersk Frysk',
+            'number_of_speakers': '~300,000'},
+            {'lat': 51.670511,
+            'lng': 12.744141,
+            'name': 'Western Yiddish',
+            'status': 'Threatened',
+            'dialects': 'Yiddish; Yiddish, Western; Central Yiddish; Yidish; Judeo-German;',
+            'number_of_speakers': '5,400'}]
+            
+
+        function updateMarkers(selectedStatus) {
+            map.eachLayer(function(layer) {
+                if (layer instanceof L.CircleMarker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            coordinates.forEach(function(coord) {
+                if (selectedStatus === "all" || coord.status === selectedStatus) {
+                    var marker = customCircleMarker(coord.lat, coord.lng, coord.name, coord.status, coord.dialects, coord.number_of_speakers, coord.url).addTo(map);
+                }
+             });
+        }
+
+        // Add markers to the map
+            coordinates.forEach(function(coord) {
+                var marker = customCircleMarker(coord.lat, coord.lng, coord.name, coord.status, coord.dialects, coord.number_of_speakers, coord.url).addTo(map);
+            });
+        
+        document.getElementById('statusSelect').addEventListener('change', function() {
+            var selectedStatus = this.value;
+            updateMarkers(selectedStatus);
+        });
+
+        updateMarkers("all");
+
+    </script>
+</body>
+</html>

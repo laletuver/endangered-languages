@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endangered Languages</title>
+
+    <!-- Link to Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/> 
+    <!-- Link to CSS file -->
+     <link rel="stylesheet" href="styles.css">
+    <!-- Link to Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>  
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo container">
+            <img src="images/logo2.png" alt="logo" class="logo">
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--Home-->
+    <section id="home">
+        <div class="home-content">
+            <div>
+                <h2>Endangered Languages in Europe</h2>
+                <p>There are 24 endangered languages in Europe. The most endangered languages are those that are spoken by a small number of people and are not being passed onto the next generation. </p>
+                <a href="map.html" class="btn">Explore the Map</a>
+            </div>
+        </div>
+    </section>
+
+    <!--Category-->
+    <section id="categories">
+        <div class="container">
+            <h2>Browse by Categories</h2>
+            <p>All the sources can be browsed by certain categories etc.Languages, Countries, Number of Speakers, Sources</p>
+            <div>
+                <div class="categories-grid">
+                    <div class="category">
+                        <a href="#">
+                            <i class="fas fa-language"></i>
+                            <h3>Languages</h3>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="#">
+                            <i class="fas fa-globe"></i>
+                            <h3>Countries</h3>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="#">
+                            <i class="fas fa-users"></i>
+                            <h3>Number of Speakers</h3>
+                        </a>
+                    </div>
+                    <div class="category">
+                        <a href="#">
+                            <i class="fas fa-book"></i>
+                            <h3>Sources</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--At a Glance Section-->
+    <section id = "at-a-glance">
+        <h2>Endangered Languages at a Glance</h2>
+        <div class="glance-container">
+            <div class = "glance-box">
+                <h3>Number of Endangered Languages by Country</h3>
+                <iframe src="pie_chart.html" frameborder="0"></iframe>
+            </div>
+            <div class = "glance-box">
+                <h3>Demographics</h3>
+                <ul class="demographics-list">
+                    <li>Total Endangered Languages<br><span class="number">87</span></li>
+                    <li>Critically Endangered Languages<br><span class="number">4</span></li>
+                    <li>Sign Languages<br><span class="number">14</span></li>
+                </ul>
+            </div>
+            <div class="glance-box">
+                <h3>Language status</h3>
+                <iframe src="bar_chart.html" frameborder="0"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barChart = new Chart(barCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Language 1', 'Language 2', 'Language 3'],
+                datasets: [{
+                    label: 'Number of Speakers',
+                    data: [300, 50, 100],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    
+</body>
+
+</html>
+     
