@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <style>
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .about-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: rgb(35, 35, 85);
+            margin-bottom: 40px;
+        }
+        .about-section {
+            margin-bottom: 30px;
+        }
+        .about-section h3 {
+            font-size: 1.8rem;
+            color: rgb(35, 35, 85);
+            margin-bottom: 10px;
+        }
+        .about-section p {
+            font-size: 1rem;
+            color: rgb(35, 35, 85);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .endangerment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .endangerment-table th, .endangerment-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .endangerment-table th {
+            background-color: #FDC93B;
+            color: white;
+            font-weight: bold;
+        }
+        .endangerment-table td {
+            background-color: #fff;
+            color: rgb(35, 35, 85);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo-container">
+            <img src="images/logo2.png" alt="logo" class="logo">
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- About Section -->
+    <div class="about-container">
+        <h1 class="about-title">About This Project</h1>
+        <div class="about-section">
+            <h3>Introduction</h3>
+            <p>The world faces a critical crisis as many languages are on the brink of extinction. The endangerment of languages is a significant issue affecting humanity, presenting moral, practical, and scientific challenges. This website focuses on documenting endangered languages in Europe, complementing existing resources such as <a href="https://www.endangeredlanguages.com" target="_blank" rel="noopener noreferrer">Endangered Languages Project</a>
+                and 
+                <a href="https://www.ethnologue.com" target="_blank" rel="noopener noreferrer">Ethnologue</a> . Our goal is to provide detailed information to raise awareness, preserve linguistic diversity, and enhance our understanding of human language.</p>
+        </div>
+        <div class="about-section">
+            <h3>Language Information</h3>
+            <p>The data on this website is sourced from <a href="https://www.endangeredlanguages.com/userquery/" target="_blank" rel="noopener noreferrer">Endangered Languages Project</a>, specifically curated and refined to focus on Europe. Each language page on the website provides comprehensive details, including:</p>
+            <ul>
+                <li><strong>ISO Code:</strong> The ISO 639-3 code uniquely identifies the language.</li>
+                <li><strong>Dialects:</strong> Lists the various names and dialects used to refer to the language or its variants.</li>
+                <li><strong>Number of Speakers:</strong> Indicates the estimated number of speakers using the language within the country.</li>
+                <li><strong>Language Family:</strong> Classifies the language into a broader language family, such as Indo-European or Uralic.</li>
+                <li><strong>Language Status:</strong> Reflects the level of endangerment as defined by UNESCO's Language Endangerment Scale. Each language is categorized from "At Risk" to "Critically Endangered," based on criteria like intergenerational transmission and the absolute number of speakers. These assessments are subject to change as new information becomes available.</li>
+            </ul>
+            <table class="endangerment-table">
+                <tr>
+                    <th>Level of Endangerment</th>
+                    <th>Criteria</th>
+                    <th>Number of Speakers</th>
+                </tr>
+                <tr>
+                    <td>Critically Endangered</td>
+                    <td>Only a few elderly speakers remain.</td>
+                    <td>1 - 9 Speakers</td>
+                </tr>
+                <tr>
+                    <td>Severely Endangered</td>
+                    <td>Most speakers are from the grandparent generation; younger generations do not speak the language.</td>
+                    <td>10 - 100 Speakers</td>
+                </tr>
+                <tr>
+                    <td>Endangered</td>
+                    <td>Some adults speak the language, but children do not.</td>
+                    <td>100 - 1,000 Speakers</td>
+                </tr>
+                <tr>
+                    <td>Threatened</td>
+                    <td>Most adults speak the language, but children generally do not.</td>
+                    <td>1,000 - 10,000 Speakers</td>
+                </tr>
+                <tr>
+                    <td>Vulnerable</td>
+                    <td>Most adults and some children speak the language.</td> 
+                    <td>10,000 - 100,000 Speakers</td>
+                </tr>
+                <tr>
+                    <td>At Risk</td>
+                    <td>All community members, including children, speak the language.</td>
+                    <td>100,000+ Speakers</td>
+                </tr>
+                <tr>
+                    <td>Awakening</td>
+                    <td>Efforts are underway to revitalize the language, resulting in new L2 speakers.</td>
+                </tr>
+            </table>
+            <p>Each language page features an interactive map highlighting the specific regions where the language is spoken. This visual representation helps users understand the geographical context of the language's use. Below the map, the page presents a list of common words and phrases in the language, offering a glimpse into its vocabulary and phonetic characteristics. These phrases are designed to give users a sense of how the language sounds and its unique linguistic features.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
