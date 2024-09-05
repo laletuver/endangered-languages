@@ -36,6 +36,8 @@ nav {
     padding: 1vw 8vw;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
     background-color: #fff;
+    position: relative;
+    z-index: 1000;
 }
 
 nav .logo-container {
@@ -250,3 +252,223 @@ nav .navigation ul li a:hover {
     margin-right: 10px;
     margin-top: 10px;
 }
+/* Languages Section */
+#languages {
+    padding: 100px 20px;
+    background-color: #fff;
+    text-align: center;
+}
+
+#languages .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+
+}
+
+#languages h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#languages input {
+    width: calc(100% - 30px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+#languages button {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #FDC93B;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#languages button:hover {
+    background-color: #cc9e1f;
+}
+
+#languageList {
+    list-style: none;
+    padding: 0;
+    font-size: 1.2rem;
+    color: rgb(21, 21, 100);
+}
+
+#languageList li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#languageList li:hover {
+    background-color: #FDC93B;
+    color: #fff;
+}
+
+/* Countries Section */
+#countries {
+    padding: 100px 20px;
+    background-color: #fff;
+}
+
+#countries .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+#countries h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: rgb(35, 35, 85);
+}
+
+#countryFilter {
+    width: calc(100% - 30px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+#sortAlphabetically {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: none;
+    background-color: #FDC93B;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#sortAlphabetically:hover {
+    background-color: #cc9e1f;
+}
+
+#countriesContent {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#countryList {
+    list-style: none;
+    padding: 0;
+    width: 45%;
+}
+
+#countryList li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#countryList li:hover {
+    background-color: #FDC93B;
+    color: #fff;
+}
+
+#languagesInCountry {
+    width: 50%;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none; /* Hidden by default */
+}
+
+#languagesInCountry h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: rgb(35, 35, 85);
+}
+
+#languageList {
+    list-style: none;
+    padding: 0;
+}
+
+#languageList li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.2rem;
+    color: rgb(21, 21, 100);
+}
+
+/* Sources Section */
+#sources {
+    padding: 50px 20px;
+    background-color: #fff;
+    text-align: left;
+}
+
+#sources .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+#sources h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: rgb(35, 35, 85);
+}
+
+#sources h3 {
+    font-size: 1.5rem;
+    margin: 30px 0 10px;
+    color: rgb(21, 21, 100);
+}
+
+#sources p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.sources-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 20px;
+}
+
+.sources-content ul li {
+    margin-bottom: 10px;
+}
+
+.sources-content ul li a {
+    color: rgb(21, 21, 100);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.sources-content ul li a:hover {
+    color: #FDC93B;
+}
+

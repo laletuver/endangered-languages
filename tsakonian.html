@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tsakonian</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: rgb(35, 35, 85);
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .content-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 2rem 8vw;
+            flex-wrap: wrap;
+        }
+
+        .content-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 48%;
+        }
+
+        .language-details table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+
+        .language-details th, .language-details td {
+            padding: 10px;
+            text-align: left;
+            font-size: 1.1rem;
+            color: rgb(21, 21, 100);
+            border: 1px solid #ddd;
+        }
+
+        .language-details th {
+            font-weight: 600;
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .language-details td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .resources h3, .language-details h3 {
+            font-size: 1.8rem;
+            color: rgb(35, 35, 85);
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .video-container iframe {
+            width: 49%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #languageMap {
+            height: 400px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .phrases-section {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+        .phrases-section h3 {
+            font-size:  2.5rem;
+            color: rgb(35, 35, 85);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .phrases-table-container {
+            width: 50%;
+            
+        }
+
+        .phrases-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        .phrases-table th,
+        .phrases-table td {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .phrases-table th {
+            background-color: #FDC93B;
+            color: white;
+            font-weight: bold;
+        }
+
+        .phrases-table td {
+            background-color: #fff;
+            color: rgb(35, 35, 85);
+        }
+        .phrases-table tr:hover {
+            background-color: #f1f1f1; /* Add hover effect for rows */
+        }
+        body {
+        padding-bottom: 30px; /* Ensure there is a gap at the bottom of the page */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo-container">
+            <img src="images/logo2.png" alt="logo" class="logo">
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="page-title">
+        Tsakonian
+    </div>
+
+    <!-- Content Section -->
+    <div class="content-container">
+        <!-- Language Details -->
+        <div class="content-item language-details">
+            <h3>Language Details</h3>
+            <table>
+                <tr>
+                    <th>ISO Code</th>
+                    <td>tsd</td>
+                </tr>
+                <tr>
+                    <th>Dialects</th>
+                    <td>Tsaconia; Tsakonia;</td>
+                </tr>
+                <tr>
+                    <th>Number of Speakers</th>
+                    <td>2000 - 4000</td>
+                </tr>
+                <tr>
+                    <th>Language Status</th>
+                    <td>Severely Endangered</td>
+                </tr>
+                <tr>
+                    <th>Language Family</th>
+                    <td>Indo-European; Greek; Doric</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="content-item resources">
+            <h3>Resources</h3>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/321JX9QiME0?si=S4JaRdhn1SBRJhNO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/RUzQaoaYeGo?si=ZKma87twcRShMzBN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div id="languageMap" class="content-item"></div>
+    </div>
+
+    <!-- Leaflet  -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            var languageMap = L.map('languageMap').setView([37.262826, 22.683782], 10); 
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(languageMap);
+
+            var expansiveDot = L.circle([37.262826, 22.683782], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 5000 
+            }).addTo(languageMap);
+        });
+    </script>
+
+    <!-- Phrases Section -->
+    <div class="phrases-section">
+        <h3>Common Phrases in Tsakonian</h3>
+        <div class="phrases-table-container">
+            <table class="phrases-table">
+                <tr>
+                    <th>English</th>
+                    <th>Tsakonian (Greek alphabet)</th>
+                    <th>Tsakonian (Latin script)</th>
+                </tr>
+                <tr>
+                    <td>Where is his/her/its room?</td>
+                    <td>Κιά έννι το όντα σι;</td>
+                    <td>Kiá éni to óda si?</td>
+                </tr>
+                <tr>
+                    <td>Where is the beach?</td>
+                    <td>Κιά έννι το περιγιάλλι;</td>
+                    <td>Kiá éni to perigiálli?</td>
+                </tr>
+                <tr>
+                    <td>Where is the bar?</td>
+                    <td>Κιά έννι το μπαρ;</td>
+                    <td>Kiá éni to bar?</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

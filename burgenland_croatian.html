@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burgenland Croatian</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: rgb(35, 35, 85);
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+
+        .content-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 2rem 8vw;
+            flex-wrap: wrap;
+        }
+
+        .content-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            width: 48%;
+        }
+
+        .language-details table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+        }
+
+        .language-details th, .language-details td {
+            padding: 10px;
+            text-align: left;
+            font-size: 1.1rem;
+            color: rgb(21, 21, 100);
+            border: 1px solid #ddd;
+        }
+
+        .language-details th {
+            font-weight: 600;
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .language-details td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .resources h3, .language-details h3 {
+            font-size: 1.8rem;
+            color: rgb(35, 35, 85);
+            margin-bottom: 20px;
+        }
+
+        .video-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .video-container iframe {
+            width: 49%;
+            height: 200px;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #languageMap {
+            height: 400px;
+            width: 100%;
+            margin: 20px 0;
+        }
+        .phrases-section {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+        .phrases-section h3 {
+            font-size:  2.5rem;
+            color: rgb(35, 35, 85);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .phrases-table-container {
+            width: 50%;
+            
+        }
+
+        .phrases-table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        .phrases-table th,
+        .phrases-table td {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .phrases-table th {
+            background-color: #FDC93B;
+            color: white;
+            font-weight: bold;
+        }
+
+        .phrases-table td {
+            background-color: #fff;
+            color: rgb(35, 35, 85);
+        }
+        .phrases-table tr:hover {
+            background-color: #f1f1f1; 
+        }
+        body {
+        padding-bottom: 30px; 
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo-container">
+            <img src="images/logo2.png" alt="logo" class="logo">
+        </div>
+        <div class="navigation">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="map.html">Map</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html>Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-title">
+        Burgenland Croatian
+    </div>
+    <div class="content-container">
+        <!-- Language Details -->
+        <div class="content-item language-details">
+            <h3>Language Details</h3>
+            <table>
+                <tr>
+                    <th>ISO Code</th>
+                    <td>ckm</td>
+                </tr>
+                <tr>
+                    <th>Dialects</th>
+                    <td>Chakavski, Chekavski, Čakavština, Čakavian, Čakavica, Čekavski, Čokovski</td>
+                </tr>
+                <tr>
+                    <th>Number of Speakers</th>
+                    <td>28,000</td>
+                </tr>
+                <tr>
+                    <th>Language Status</th>
+                    <td>Threatened</td>
+                </tr>
+                <tr>
+                    <th>Language Family</th>
+                    <td>Indo-European; Balto-Slavic; Slavic; South Slavic</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Resources Section -->
+        <div class="content-item resources">
+            <h3>Resources</h3>
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/VFjDjarQtLc?si=KtZMcj_QI_ZQVGdx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Y6fduIpK9ic?si=C8fOS5zVEOJ1H_dh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div id="languageMap" class="content-item"></div>
+    </div>
+
+    <!-- Leaflet  -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var languageMap = L.map('languageMap').setView([47.8435,16.5179], 10); 
+
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(languageMap);
+
+            
+            var expansiveDot = L.circle([47.8435,16.5179], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 5000 
+            }).addTo(languageMap);
+        });
+    </script>
+
+    <!-- Phrases Section -->
+    <div class="phrases-section">
+        <h3>Common Phrases in Burgenland Croatian</h3>
+        <div class="phrases-table-container">
+            <table class="phrases-table">
+                <tr>
+                    <th>English</th>
+                    <th>Burgenland Croatian</th>
+                </tr>
+                <tr>
+                    <td>Hello</td>
+                    <td>Zdravo</td>
+                </tr>
+                <tr>
+                    <td>Good morning</td>
+                    <td>Dobro jutro</td>
+                </tr>
+                <tr>
+                    <td>Good night</td>
+                    <td>Laku noć</td>
+                </tr>
+                <tr>
+                    <td>Thank you</td>
+                    <td>Hvala</td>
+                </tr>
+                <tr>
+                    <td>How are you?</td>
+                    <td>Kako ti ide?(inf)<br>
+                        Kako Vam ide?(frm)</td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>What's your name?</td>
+                    <td>Kako ti je ime? (inf)<br>
+                        Kako Vam je ime? (frm)</td>
+                </tr>
+                <tr>
+                    <td>Where are you from?</td>
+                    <td> Odakle si? (inf)<br>
+                        Odakle ste? (frm)</td>
+                    </td>
+                </tr>
+                <tr>
+                    <td>All the best!</td>
+                    <td>Sve najbolje!</td>
+                <tr>
+                    <td>Goodbye</td>
+                    <td>Doviđenja</td>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

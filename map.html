@@ -9,6 +9,13 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <style>
+        page-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: rgb(35, 35, 85);
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
         body {
             background: gray;
             margin: 75px 100px 100px 100px;
@@ -23,6 +30,13 @@
             left: 0;
             right: 0;
         } 
+        .leaflet-control-zoom {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+            left: auto !important; 
+        }
+
         .custom-div-icon {
             width: 10px;
             height: 10px;
@@ -48,16 +62,23 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
-        #filter select {
+        #filter select,
+        #filter input,
+        #filter button {
             width: 100%;
             padding: 5px;
             margin-bottom: 10px;
             border-radius: 4px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
         }
+        
+
         #legend {
             margin-top: 10px;
-            font-size: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+
         }
 
         #legend p {
@@ -74,7 +95,15 @@
     </style> 
 </head>
 <body>
+    
     <div id="filter">
+
+        <label for = "languageSearch">Filter by Language:</label>
+        <input type="text" id="languageSearch" list="languageSuggestions" placeholder="Search for a language...">
+        <datalist id="languageSuggestions"></datalist>
+        <button id="searchButton">Search</button>
+
+
         <label for="statusSelect">Filter by Language Status:</label>
         <select id="statusSelect">
             <option value="all">All</option>
@@ -86,19 +115,25 @@
             <option value="Critically Endangered">Critically Endangered</option>
             <option value="Awakening">Awakening</option>
         </select>
+
+
         <div id="legend">
-            <p><span style="background: green;"></span> At risk</p>
-            <p><span style="background: blue;"></span> Vulnerable</p>
-            <p><span style="background: lightblue;"></span> Threatened</p>
-            <p><span style="background: yellow;"></span> Endangered</p>
-            <p><span style="background: orange;"></span> Severely Endangered</p>
-            <p><span style="background: red;"></span> Critically Endangered</p>
+            <p><span style="background: green;"></span> At risk (> 100,000)</p>
+            <p><span style="background: blue;"></span> Vulnerable (10,000 - 99,999)</p>
+            <p><span style="background: lightblue;"></span> Threatened (1000 - 9999)</p>
+            <p><span style="background: yellow;"></span> Endangered (100 - 999)</p>
+            <p><span style="background: orange;"></span> Severely Endangered (10 - 99)</p>
+            <p><span style="background: red;"></span> Critically Endangered (1 - 9)</p>
             <p><span style="background: gray;"></span> Awakening</p>
         </div>
     </div>
     <div id="map"></div>
     <script>
         var map = L.map('map').setView([54.5260, 60.2551], 3);
+
+        L.control.zoom({
+            position: 'topright'
+        }).addTo(map);
 
         var southWest = L.latLng(30.0, -35.0), 
             northEast = L.latLng(75.0, 60.0); 
@@ -123,10 +158,27 @@
             "Awakening": "gray"
         };
 
-        //generate pop-up content
+        // Function to generate pop-up content 
         var generatePopupContent = function(name, status, dialects, number_of_speakers, url) {
-            return "<a href='" + url + "' target='_blank'><b>" + name + "</b></a><br>Status: " + status + "<br>Dialects: " + dialects + "<br>Number of speakers: " + number_of_speakers;
+            return `
+                <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333;">
+                    <a href="${url}" target="_blank" style="font-size: 16px; font-weight: bold; color: #2c7bb6; text-decoration: none;">${name}</a>
+                    <div style="margin-top: 5px;">
+                        <div style="margin-bottom: 5px;">
+                            <strong>Status:</strong> ${status}</span>
+                        </div>
+                        <div style="margin-bottom: 5px;">
+                            <strong>Dialects:</strong> ${dialects}</span>
+                        </div>
+                        <div style="margin-bottom: 5px;">
+                            <strong>Number of speakers:</strong> ${number_of_speakers}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
         };
+
+
 
         //custom icon
         var customCircleMarker = function(lat, lng, name, status, dialects, number_of_speakers, url) {
@@ -145,17 +197,20 @@
         var coordinates = [
             {'lat': 40.564318,
             'lng': 8.328667,
-            'name': 'Catalan',
+            'name': 'Algherese Catalan',
             'status': 'Vulnerable',
             'dialects': 'Catalan-Valencian-Balear; Catalonian; Valencian; Catalán',
-            'number_of_speakers': '20,000-30,000'},
+            'number_of_speakers': '20,000-30,000',
+            'url': 'algherese_catalan.html'},
             {'lat': 42.2935,
             'lng': -0.4394,
             'name': 'Aragonese',
             'status': 'Endangered',
             'dialects': 'Aragoieraz; Altoaragonés; Aragonés; Fabla Aragonesa; Patués; High Aragonese;',
-            'number_of_speakers': '<10,000'},
-            {'lat': 40.9321,
+            'number_of_speakers': '<10,000', 
+            'url': 'aragonese.html'},
+            {
+            'lat': 40.9321,
             'lng': 14.8645,
             'name': 'Arbëreshë',
             'status': 'Vulnerable',
@@ -166,7 +221,8 @@
             'name': 'Aromanian',
             'status': 'Threatened',
             'dialects': 'Armãneashti; Armãneascã; Armãneshce; Rrămăneashti; Machiduneashti; Armân; Arumanian; Armina; Vlach; Arumun; Aromunian; Macedo-Romanian; Macedo-Rumanian; Other Roumanian Lects;',
-            'number_of_speakers': '350,000'},
+            'number_of_speakers': '350,000',
+            'url': 'aromanian.html'},
             {'lat': 38.1863,
             'lng': 23.6096,
             'name': 'Arvanitika',
@@ -190,7 +246,8 @@
             'name': 'Burgenland Croatian',
             'status': 'Threatened',
             'dialects': 'Chakavski, Chekavski, Čakavština, Čakavian, Čakavica, Čekavski, Čokovski',
-            'number_of_speakers': '28,000'},
+            'number_of_speakers': '28,000',
+            'url': 'burgenland_croatian.html'},
             {'lat': 40.0,
             'lng': 9.0,
             'name': 'Campidanese Sardinian',
@@ -238,7 +295,8 @@
             'name': 'Danish Sign Language',
             'status': 'Threatened',
             'dialects': 'DTS; Dansk tegnsprog',
-            'number_of_speakers': '5,000'},
+            'number_of_speakers': '5,000',
+            'url': 'danish_sign_language.html'},
             {'lat': 52.13,
             'lng': 4.91,
             'name': 'Dutch Sign Language',
@@ -280,7 +338,8 @@
             'name': 'Friulian',
             'status': 'Threatened',
             'dialects': 'Furlan; Frioulan; Frioulian; Priulian; Friulano;',
-            'number_of_speakers': '600,412'},
+            'number_of_speakers': '600,412',
+            'url': 'friulian.html'},
             {'lat': 47.931,
             'lng': -2.0544,
             'name': 'Gallo',
@@ -304,13 +363,15 @@
             'name': 'Guernésiais',
             'status': 'Endangered',
             'dialects': 'Dgèrnésiais; Guernsey French; Guernésiais',
-            'number_of_speakers': '200-300'},
+            'number_of_speakers': '200-300',
+            'url': 'guernesiais.html'},
             {'lat': 68.8446,
             'lng': 27.2817,
             'name': 'Inari Saami',
             'status': 'Endangered',
             'dialects': 'инари-саамский язык; inarinsaame; anarâškielâ; Anárašgiella; Enaresamisk; Enaresamiska; "Inari Lappish;" ',
-            'number_of_speakers': '~300'},
+            'number_of_speakers': '~300',
+            'url': 'inari_saami.html'},
             {'lat': 52.5,
             'lng': -9.0,
             'name': 'Irish',
@@ -346,7 +407,8 @@
             'name': 'Kashubian',
             'status': 'Vulnerable',
             'dialects': 'Cassubian; Kaszubski; Cashubian;',
-            'number_of_speakers': '50,000'},
+            'number_of_speakers': '50,000',
+            'url': 'kashubian.html'},
             {'lat': 69.38,
             'lng': 29.54,
             'name': 'Kven Finnish',
@@ -358,7 +420,8 @@
             'name': 'Ladin',
             'status': 'Threatened',
             'dialects': 'Ladino; Dolomite; Rhaeto-Romance; Rhaeto-Romanic;',
-            'number_of_speakers': '~20,000'},
+            'number_of_speakers': '~20,000',
+            'url': 'ladin.html'},
             {'lat': 43.8899,
             'lng': 2.5378,
             'name': 'Languedocien',
@@ -430,7 +493,8 @@
             'name': 'Mócheno',
             'status': 'Threatened',
             'dialects': 'Bersntolerisch; Fersentalerisch; Mochenisch; Mocheno; Mócheno',
-            'number_of_speakers': '1,900'},
+            'number_of_speakers': '1,900',
+            'url': 'mocheno.html'},
             {'lat': 49.081,
             'lng': -0.6591,
             'name': 'Norman',
@@ -448,7 +512,8 @@
             'name': 'Northern Frisian',
             'status': 'Threatened',
             'dialects': 'Frisian (North); Frisian (Northern); Frisian; North Frisian; Nordfriesisch; Friesisch;  Frisian, Northern',
-            'number_of_speakers': '~8,000'},
+            'number_of_speakers': '~8,000',
+            'url': 'northern_frisian.html'},
             {'lat': 60.77,
             'lng': 10.24,
             'name': 'Norwegian Sign Language',
@@ -562,7 +627,8 @@
             'name': 'Tsakonian',
             'status': 'Severely Endangered',
             'dialects': 'Tsaconia; Tsakonia;',
-            'number_of_speakers': '2000-4000'},
+            'number_of_speakers': '2000-4000',
+            'url': 'tsakonian.html'},
             {'lat': 65.1091,
             'lng': 18.2153,
             'name': 'Ume Saami',
@@ -598,7 +664,8 @@
             'name': 'Welsh',
             'status': 'Vulnerable',
             'dialects': 'Cymraeg; y Gymraeg; Kymrisch; Gallois; Galés;',
-            'number_of_speakers': '562,016 in Wales'},
+            'number_of_speakers': '562,016 in Wales',
+            'url': 'welsh.html'},
             {'lat': 53.219359,
             'lng': 5.78621,
             'name': 'West Frisian',
@@ -614,30 +681,83 @@
             
 
         function updateMarkers(selectedStatus) {
-            map.eachLayer(function(layer) {
+            map.eachLayer(function (layer) {
                 if (layer instanceof L.CircleMarker) {
                     map.removeLayer(layer);
                 }
             });
 
-            coordinates.forEach(function(coord) {
+            coordinates.forEach(function (coord) {
                 if (selectedStatus === "all" || coord.status === selectedStatus) {
                     var marker = customCircleMarker(coord.lat, coord.lng, coord.name, coord.status, coord.dialects, coord.number_of_speakers, coord.url).addTo(map);
                 }
-             });
+            });
         }
 
-        // Add markers to the map
-            coordinates.forEach(function(coord) {
-                var marker = customCircleMarker(coord.lat, coord.lng, coord.name, coord.status, coord.dialects, coord.number_of_speakers, coord.url).addTo(map);
-            });
-        
-        document.getElementById('statusSelect').addEventListener('change', function() {
+        // Initial load of all markers
+        updateMarkers("all");
+
+        // Event listener for status selection
+        document.getElementById('statusSelect').addEventListener('change', function () {
             var selectedStatus = this.value;
             updateMarkers(selectedStatus);
         });
 
-        updateMarkers("all");
+        let currentSearchIndex = 0; // Global index to track the current match
+        let currentSearchResults = []; // Array to store matching results
+
+        function normalizeString(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        function searchLanguage(languageName) {
+            const searchText = normalizeString(languageName.trim()); // Normalize input
+            currentSearchResults = coordinates.filter(coord => normalizeString(coord.name).includes(searchText)); // Find all matches
+
+            if (currentSearchResults.length > 0) {
+                // Reset the index if it exceeds the number of matches
+                if (currentSearchIndex >= currentSearchResults.length) {
+                    currentSearchIndex = 0;
+                }
+
+                const coord = currentSearchResults[currentSearchIndex]; // Get the current match
+                L.popup()
+                    .setLatLng([coord.lat, coord.lng])
+                    .setContent(
+                        generatePopupContent(
+                            coord.name,
+                            coord.status,
+                            coord.dialects,
+                            coord.number_of_speakers,
+                            coord.url
+                        )
+                    )
+                    .openOn(map);
+
+                currentSearchIndex++; // Move to the next match for subsequent searches
+            } else {
+                alert("Language not found.");
+                currentSearchIndex = 0; // Reset index if no match is found
+                currentSearchResults = []; // Clear matches
+            }
+        }
+
+        // Reset search index when input changes
+        document.getElementById('languageSearch').addEventListener('input', function () {
+            currentSearchIndex = 0;
+            currentSearchResults = [];
+        });
+
+        // Event listener for the search button
+        document.getElementById('searchButton').addEventListener('click', function () {
+            const languageName = document.getElementById('languageSearch').value;
+            if (languageName) {
+                searchLanguage(languageName);
+            } else {
+                alert("Please enter a language name.");
+            }
+        });
+
 
     </script>
 </body>
