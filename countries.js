@@ -1,14 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
     var countries = [
-        { name: 'Spain', languages: ['Aragonese'] },
-        { name: 'Italy', languages: ['Algherese Catalan', 'Friulian', 'Ladin', 'Mocheno'] },
-        { name: 'Greece', languages: ['Aromanian', 'Tsakonian'] },
-        { name: 'Austria', languages: ['Burgenland Croation'] },
-        { name: 'Denmark', languages: ['Danish Sign Language'] },
-        { name: 'United Kingdom', languages: ['Guernésiais', 'Welsh'] },
-        { name: 'Finland', languages: ['Inari Saami'] },
-        { name: 'Poland', languages: ['Kashubian'] },
-        { name: 'Germany', languages: ['Northern Frisian'] },
+        { name: 'Spain', languages: [{ name: 'Aragonese', url: 'aragonese.html' }] },
+        { name: 'Italy', languages: [
+            { name: 'Algherese Catalan', url: 'algherese_catalan.html' }, 
+            { name: 'Friulian', url: 'friulian.html' }, 
+            { name: 'Ladin', url: 'ladin.html' }, 
+            { name: 'Mocheno', url: 'mocheno.html' }] 
+        },
+        { name: 'Greece', languages: [
+            { name: 'Aromanian', url: 'aromanian.html' }, 
+            { name: 'Tsakonian', url: 'tsakonian.html' }] 
+        },
+        { name: 'Austria', languages: [{ name: 'Burgenland Croatian', url: 'burgenland_croatian.html' }] },
+        { name: 'Denmark', languages: [{ name: 'Danish Sign Language', url: 'danish_sign_language.html' }] },
+        { name: 'United Kingdom', languages: [
+            { name: 'Guernésiais', url: 'guernesiais.html' }, 
+            { name: 'Welsh', url: 'welsh.html' }] 
+        },
+        { name: 'Finland', languages: [{ name: 'Inari Saami', url: 'inari_saami.html' }] },
+        { name: 'Poland', languages: [{ name: 'Kashubian', url: 'kashubian.html' }] },
+        { name: 'Germany', languages: [{ name: 'Northern Frisian', url: 'northern_frisian.html' }] }
     ];
 
     var countryList = document.getElementById('countryList');
@@ -50,7 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
         languageList.innerHTML = '';
         country.languages.forEach(function(language) {
             var li = document.createElement('li');
-            li.textContent = language;
+            var a = document.createElement('a');
+            a.href = language.url;
+            a.textContent = language.name;
+            li.appendChild(a);
+            
             languageList.appendChild(li);
         });
         languagesInCountry.style.display = 'block';
